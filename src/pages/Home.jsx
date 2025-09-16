@@ -14,7 +14,7 @@ import coffeejourney7 from "../assets/coffeejourney7.png";
 import Cards from './../components/Cards';
 import Carousel from './../components/Carousel';
 import LastCard from './../components/LastCard';
-import Insta from './../components/Insta';
+import Slide from './../components/Slide';
 
 
 const Home = () => {
@@ -60,10 +60,12 @@ Explore Our Products
 
 </div>
 <LastCard/>
-<div className='text-center mt-12 mb-12'>
-    <h1 className='text-black text-4xl font-bold tracking-widest '>Checkout Our <br />Instagram Posts</h1>
+<div className='text-center mt-12 mb-12 '>
+    <h1 className='text-black text-4xl mb-8 font-bold tracking-widest'>
+        Checkout Our <br />Instagram Posts
+    </h1>
+    <Slide/>
 </div>
-<Insta/>
 </div>
     );
 };
