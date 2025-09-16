@@ -32,6 +32,9 @@ const Header = () => {
                     <NavLink to="/profile" className="text-[#1E1E1E] hover:text-[#EF2E48] text-lg">
                         Login
                     </NavLink>
+                    <NavLink to="/register" className="text-[#1E1E1E] hover:text-[#EF2E48] text-lg">
+                        Signup
+                    </NavLink>
 < button className="cursor-pointer">
 <img src={search} alt="Search" />
 </button>
