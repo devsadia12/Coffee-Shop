@@ -1,63 +1,73 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate, } from 'react-router';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { signInWithPopup } from "firebase/auth";
 import { auth } from './../../firebase.config';
 import { DataContext } from "../../contextApi/contextApi";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
-  const {setUserData} = React.useContext(DataContext);
-  const [loading, setLoading] = React.useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { setUserData } = useContext(DataContext);
+
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const submitted = (data) => {
+    console.log("Form submitted with data:", data);
+    // You can add email/password login logic here if needed
+  };
+
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  const navigate = useNavigate();
 
   const googleLogin = () => {
+    console.log("Google login clicked");
     setLoading(true);
     signInWithPopup(auth, provider)
-  .then((result) => {
-    const user = result.user;
-    console.log("user signed in:", user);
-    // IdP data available using getAdditionalUserInfo(result)
-    // ...
-    setUserData(user);
-    setLoading(false); 
-    navigate("/");
+      .then((result) => {
+        const user = result.user;
+        console.log("user signed in:", user);
+        setUserData(user);
+        setLoading(false);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error during signup:", error.code, error.message);
+        setLoading(false);
+      });
+  };
 
-  }).catch((error) => {
-    // Handle Errors here.
-    console.error("Error during Google login;", error);
-    // ...
-    setLoading(false); 
-  });
-  console.log("Google login clicked");
- };
-
- if (loading) {
-   return <div className="loading">Loading...</div>;
- };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-xl font-semibold">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-black shadow-lg rounded-2xl p-8">
         <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit(submitted)}>
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
               type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+              {...register("email")}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
-  type="password"
-  placeholder="Enter your password"
-  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-  autoComplete="current-password"
-/>
+              type="password"
+              {...register("password")}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+            />
           </div>
 
           <div className="flex items-center justify-between text-sm">
@@ -71,7 +81,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer"
           >
             Login
           </button>
@@ -83,8 +93,9 @@ const Login = () => {
 
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-yellow-400 transition"
-            onClick={()=> googleLogin()}>
+            className="w-full flex items-center cursor-pointer justify-center gap-2 border py-2 rounded-lg hover:bg-yellow-400 transition"
+            onClick={googleLogin}
+          >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
